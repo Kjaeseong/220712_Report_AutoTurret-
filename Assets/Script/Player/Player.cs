@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
             PlayerDie();
         }
     }
-
+    
     private void PlayerDie()
     {
         gameObject.SetActive(false);
