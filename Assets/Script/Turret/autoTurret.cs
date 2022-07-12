@@ -6,9 +6,8 @@ public class autoTurret : MonoBehaviour
 {
     public float TurretRotateSpeed = 1f;
     public float BulletSpawnTime_sec = 1f;
-    private bool PlayerDetected;
     private float GetTime = 0f;
-    Vector3 SaveTurretRotate;
+    private bool PlayerDetected;
 
     public Transform Player;
     public GameObject BulletPrefab;
