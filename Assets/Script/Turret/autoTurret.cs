@@ -1,54 +1,52 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class autoTurret : MonoBehaviour
 {
+    public float BulletSpawnTime = 1f;
+    public float angleRange = 60f;
+    public float DistanceRange = 7.5f;
     public float TurretRotateSpeed = 1f;
-    public float BulletSpawnTime_sec = 1f;
-    private float GetTime = 0f;
-    private bool PlayerDetected;
+    public bool inCollider;
 
-    public Transform Player;
     public GameObject BulletPrefab;
+    public Transform target;
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.tag == "Player")
-        {
-            PlayerDetected = true;
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Player")
-        {
-            PlayerDetected = false;
-        }
-    }
+    private float _Cumulativetime = 0f;
+    private float _dotValue = 0f;
+
+    Vector3 DistanceToPlayer;
 
 
-    void Update()
+
+    void Update ()
     {
-        if (PlayerDetected)
+        transform.Rotate(0f, TurretRotateSpeed, 0f);
+        
+        _dotValue = Mathf.Cos(Mathf.Deg2Rad * (angleRange / 2));
+
+        DistanceToPlayer = target.position - transform.position;
+
+        if (DistanceToPlayer.magnitude < DistanceRange)
         {
-            transform.LookAt(Player);
-            Shoot();
-        }
-        else 
-        {
-            transform.Rotate(0f, TurretRotateSpeed, 0f);
+            if (Vector3.Dot(DistanceToPlayer.normalized, transform.forward) > _dotValue)
+            {
+                Shoot();
+            }
         }
     }
 
     private void Shoot()
     {
-        GetTime += Time.deltaTime;
-        if (GetTime >= BulletSpawnTime_sec)
+        transform.LookAt(target);
+
+        _Cumulativetime += Time.deltaTime;
+        if (_Cumulativetime >= BulletSpawnTime)
         {
-            GetTime = 0f;
+            _Cumulativetime = 0f;
             GameObject bullet = Instantiate(BulletPrefab, transform.position, transform.rotation);
         }
     }
-
 }
